@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mading Digital - Kelas 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @keyframes bg-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #D8E2DC;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='doodles' patternUnits='userSpaceOnUse' width='100' height='100'%3E%3Cg fill='%23C7D1CC' fill-opacity='0.8'%3E%3Cpath d='M22 56.27L20.59 55.12C19.44 54.2 19 52.91 19 51.56V49.5C19 47.02 21.02 45 23.5 45H26.5C28.98 45 31 47.02 31 49.5V51.56C31 52.91 30.56 54.2 29.41 55.12L28 56.27V63H22V56.27ZM25 47C23.9 47 23 47.9 23 49V51H27V49C27 47.9 26.1 47 25 47Z'/%3E%3Cpath d='M80 15.5C80 12.46 77.54 10 74.5 10H71.5C68.46 10 66 12.46 66 15.5V23H80V15.5Z'/%3E%3Cpath d='M73 25H77V34H73V25Z'/%3E%3Cpath d='M68 36H71V38H68V36Z'/%3E%3Cpath d='M79 36H82V38H79V36Z'/%3E%3Cpath d='M73.5 38.5L72 40L74 42L76 40L74.5 38.5Z'/%3E%3Cpath d='M15 5C14.45 5 14 5.45 14 6V11H6C5.45 11 5 11.45 5 12C5 12.55 5.45 13 6 13H14V18C14 18.55 14.45 19 15 19C15.55 19 16 18.55 16 18V13H24C24.55 13 25 12.55 25 12C25 11.45 24.55 11 24 11H16V6C16 5.45 15.55 5 15 5Z'/%3E%3Cpath d='M85 88L94 92L90 83Z'/%3E%3Cpath d='M10 70L2 65L8 60Z'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23doodles)'/%3E%3C/svg%3E");
+            animation: bg-pan 30s linear infinite;
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal-enter { animation: fadeIn 0.3s ease-out; }
+        .modal-leave { animation: fadeOut 0.3s ease-in; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .student-card {
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            transform-origin: center center;
+        }
+        .desc-enter { animation: descIn 0.5s ease-out forwards; }
+        @keyframes descIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chalkboard {
+            background-color: #408966;
+            background-image: url("data:image/svg+xml,%3Csvg width='150' height='150' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='%23FFF' stroke-width='1' stroke-opacity='0.07'%3E%3Cpath d='M-50 50 L200 100' /%3E%3Cpath d='M-20 180 L220 -20' /%3E%3Cpath d='M-30 100 L170 200' /%3E%3Cpath d='M180 -40 L-20 160' /%3E%3Cpath d='M80 -20 L-30 190' /%3E%3C/g%3E%3C/svg%3E");
+        }
+        .schedule-btn {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .schedule-btn-active {
+            background-color: #caa670 !important;
+            color: white !important;
+        }
+        .schedule-card-enter {
+            animation: scheduleIn 0.4s ease-out forwards;
+        }
+        @keyframes scheduleIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-12 md:mb-16 flex justify-center">
+            <div class="relative inline-block bg-[#E9E5D3] py-4 px-6 sm:py-6 sm:px-8 rounded-lg shadow-xl border-4 border-dashed border-[#caa670]">
+                <div class="absolute -top-4 -left-4 sm:-top-5 sm:-left-5 text-yellow-500 transform -rotate-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                </div>
+                <div class="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 text-yellow-500 transform rotate-12">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" /></svg>
+                </div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#3A6B35] drop-shadow-sm">MADING KELAS 4</h1>
+                <p class="text-base sm:text-lg text-gray-600 mt-2 font-semibold">Sumber Informasi, Prestasi, dan Kegiatan Siswa</p>
+            </div>
+        </header>
+
+        <section class="chalkboard p-4 sm:p-6 rounded-2xl shadow-lg mb-8 md:mb-12 border-8 sm:border-[16px] border-[#caa670]">
+            <div class="flex justify-center mb-4">
+                <div class="inline-flex items-center gap-2 sm:gap-4 py-2 px-4 sm:px-8 bg-white/10 border-2 border-dashed border-yellow-300 rounded-lg shadow-lg">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white text-center">SISWA BERPRESTASI</h2>
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                </div>
+            </div>
+            <div class="relative">
+                <div id="slider-container" class="flex items-center overflow-x-auto scroll-smooth scrollbar-hide gap-4 py-4">
+                </div>
+                <button id="prev-slide" class="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-2 sm:-translate-x-4 bg-[#caa670] text-white rounded-full p-1 sm:p-2 shadow-lg hover:bg-[#b38f5a] z-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button id="next-slide" class="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-2 sm:translate-x-4 bg-[#caa670] text-white rounded-full p-1 sm:p-2 shadow-lg hover:bg-[#b38f5a] z-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+            </div>
+            <div id="description-container" class="mt-6 min-h-[200px] sm:min-h-[220px] flex items-center justify-center p-0 sm:p-4">
+                <div id="description-content" class="bg-white p-4 sm:p-6 rounded-xl shadow-xl border border-gray-200 w-full max-w-3xl grid grid-cols-1 md:grid-cols-5 gap-4 sm:gap-6 items-center">
+                    <div class="md:col-span-2 text-center">
+                        <h3 id="student-name" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#3A6B35]"></h3>
+                        <p id="student-class" class="text-lg sm:text-xl font-bold text-[#408966] mt-1"></p>
+                    </div>
+                    <div class="md:col-span-3">
+                        <div id="student-achievement-badge" class="flex items-center gap-3 mb-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <span class="text-base sm:text-xl font-bold text-[#408966]" id="student-achievement"></span>
+                        </div>
+                        <p id="student-description" class="text-sm sm:text-base text-gray-600"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="chalkboard p-4 sm:p-6 rounded-2xl shadow-lg mb-8 md:mb-12 border-8 sm:border-[16px] border-[#caa670]">
+            <div class="flex justify-center mb-6">
+                <div class="inline-flex items-center gap-2 sm:gap-4 py-2 px-4 sm:px-8 bg-white/10 border-2 border-dashed border-yellow-300 rounded-lg shadow-lg">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white text-center">JADWAL PELAJARAN</h2>
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                </div>
+            </div>
+            <div id="schedule-buttons" class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2 mb-6 bg-white/20 p-2 rounded-lg">
+                <button data-class="4A" class="schedule-btn schedule-btn-active text-white font-bold py-2 px-4 rounded-md w-full">Kelas 4A</button>
+                <button data-class="4B" class="schedule-btn text-gray-300 font-bold py-2 px-4 rounded-md w-full hover:bg-white/20">Kelas 4B</button>
+                <button data-class="4C" class="schedule-btn text-gray-300 font-bold py-2 px-4 rounded-md w-full hover:bg-white/20">Kelas 4C</button>
+                <button data-class="4D" class="schedule-btn text-gray-300 font-bold py-2 px-4 rounded-md w-full hover:bg-white/20">Kelas 4D</button>
+            </div>
+            <div id="schedule-container" class="text-white">
+                <!-- Konten jadwal akan di-generate oleh JavaScript -->
+            </div>
+        </section>
+
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="md:col-span-2 chalkboard p-4 sm:p-6 rounded-2xl shadow-lg border-8 sm:border-[16px] border-[#caa670] flex flex-col">
+                <div class="flex justify-center mb-6">
+                    <div class="inline-flex items-center gap-2 sm:gap-4 py-2 px-4 sm:px-8 bg-white/10 border-2 border-dashed border-yellow-300 rounded-lg shadow-lg">
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path></svg>
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white text-center">INFORMASI ORANG TUA</h2>
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path></svg>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-grow">
+                    <div class="bg-yellow-50 p-4 rounded-lg shadow-lg relative transition-transform hover:scale-105">
+                        <div class="absolute top-2 left-2 w-6 h-6 bg-red-500 rounded-full shadow-md border-2 border-white/80"></div>
+                        <div class="flex items-start gap-4 pl-4 pt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">Pertemuan Wali Murid</h3>
+                                <p class="text-sm text-gray-600 mt-1">Sabtu, 25 Juli 2025, pukul 09:00 WIB di Aula Sekolah. Mohon kehadirannya.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg shadow-lg relative transition-transform hover:scale-105">
+                        <div class="absolute top-2 left-2 w-6 h-6 bg-yellow-400 rounded-full shadow-md border-2 border-white/80"></div>
+                        <div class="flex items-start gap-4 pl-4 pt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd" /></svg>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">Jadwal UTS</h3>
+                                <p class="text-sm text-gray-600 mt-1">Dilaksanakan pada 1 - 5 Agustus 2025. Jadwal detail akan dibagikan segera.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-pink-50 p-4 rounded-lg shadow-lg relative transition-transform hover:scale-105">
+                        <div class="absolute top-2 left-2 w-6 h-6 bg-blue-400 rounded-full shadow-md border-2 border-white/80"></div>
+                          <div class="flex items-start gap-4 pl-4 pt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">Libur Sekolah</h3>
+                                <p class="text-sm text-gray-600 mt-1">Sekolah akan libur pada tanggal 17 Agustus 2025 untuk memperingati Hari Kemerdekaan.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg shadow-lg relative transition-transform hover:scale-105">
+                        <div class="absolute top-2 left-2 w-6 h-6 bg-purple-500 rounded-full shadow-md border-2 border-white/80"></div>
+                          <div class="flex items-start gap-4 pl-4 pt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 16a2 2 0 110-4 2 2 0 010 4z" /></svg>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">Lomba Antar Kelas</h3>
+                                <p class="text-sm text-gray-600 mt-1">Lomba kebersihan dan mading antar kelas akan diadakan pada 10 Agustus 2025.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="showInfoModal()" class="bg-[#caa670] text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-[#b38f5a] transition-colors flex items-center gap-2 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                        Lihat Semua Informasi
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col space-y-4">
+                 <button onclick="showPasswordModal('4A')" class="group chalkboard text-white font-bold py-4 px-6 rounded-2xl shadow-lg card-hover text-lg border-8 border-[#caa670] hover:bg-[#3A6B35] hover:border-yellow-300 transition-all duration-300 flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Portal Kelas 4A</span>
+                </button>
+                <button onclick="showPasswordModal('4B')" class="group chalkboard text-white font-bold py-4 px-6 rounded-2xl shadow-lg card-hover text-lg border-8 border-[#caa670] hover:bg-[#3A6B35] hover:border-yellow-300 transition-all duration-300 flex items-center justify-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Portal Kelas 4B</span>
+                </button>
+                <button onclick="showPasswordModal('4C')" class="group chalkboard text-white font-bold py-4 px-6 rounded-2xl shadow-lg card-hover text-lg border-8 border-[#caa670] hover:bg-[#3A6B35] hover:border-yellow-300 transition-all duration-300 flex items-center justify-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Portal Kelas 4C</span>
+                </button>
+                <button onclick="showPasswordModal('4D')" class="group chalkboard text-white font-bold py-4 px-6 rounded-2xl shadow-lg card-hover text-lg border-8 border-[#caa670] hover:bg-[#3A6B35] hover:border-yellow-300 transition-all duration-300 flex items-center justify-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>Portal Kelas 4D</span>
+                </button>
+            </div>
+        </main>
+
+        <section class="chalkboard p-4 sm:p-6 rounded-2xl shadow-lg mt-8 border-8 sm:border-[16px] border-[#caa670]">
+            <div class="flex justify-center mb-6">
+                <div class="inline-flex items-center gap-2 sm:gap-4 py-2 px-4 sm:px-8 bg-white/10 border-2 border-dashed border-yellow-300 rounded-lg shadow-lg">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white text-center">GALERI AKTIVITAS</h2>
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
+                </div>
+            </div>
+            <div id="gallery-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <!-- Konten galeri akan di-generate oleh JavaScript -->
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center py-8 text-gray-600 text-sm">
+        <p>&copy; 2025 FIQRI DEV. All Rights Reserved.</p>
+    </footer>
+
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-lg w-full modal-enter">
+            <h3 id="modal-title" class="text-2xl font-bold text-[#408966] mb-4"></h3>
+            <div id="modal-body" class="text-gray-700 mb-6 max-h-[70vh] overflow-y-auto"></div>
+            <button id="modal-close-button" onclick="hideModal()" class="w-full chalkboard text-white font-bold py-2 px-4 rounded-lg hover:bg-[#3A6B35] transition-colors">
+                Tutup
+            </button>
+        </div>
+    </div>
+    
+    <div id="info-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="info-modal-content bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-2xl w-full modal-enter">
+            <h3 class="text-2xl font-bold text-center text-[#408966] mb-4">Semua Informasi</h3>
+            <div id="info-modal-body" class="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+            </div>
+            <button onclick="hideInfoModal()" class="w-full mt-6 chalkboard text-white font-bold py-2 px-4 rounded-lg hover:bg-[#3A6B35] transition-colors">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const studentData = [
+                { name: "Claudia", class: "Kelas 4A", achievement: "Juara 1 Cerdas Cermat", description: "Claudia menunjukkan kecerdasan dan ketenangan luar biasa saat memimpin timnya meraih Juara 1 dalam Lomba Cerdas Cermat tingkat kabupaten.", image: "https://avatar.iran.liara.run/public/girl?username=Claudia" },
+                { name: "Budi", class: "Kelas 4B", achievement: "Atlet Terbaik O2SN", description: "Dengan semangat juang yang tak kenal lelah, Budi berhasil menyabet medali emas dan dinobatkan sebagai Atlet Terbaik pada cabang olahraga renang di ajang O2SN.", image: "https://avatar.iran.liara.run/public/boy?username=Budi" },
+                { name: "Anita", class: "Kelas 4C", achievement: "Puisi Terbaik Bulan Ini", description: "Melalui kata-kata yang indah, puisi karya Anita yang berjudul 'Senja di Jendela Kelas' berhasil terpilih sebagai Karya Puisi Terbaik bulan ini.", image: "https://avatar.iran.liara.run/public/girl?username=Anita" },
+                { name: "Rian", class: "Kelas 4C", achievement: "Siswa Paling Disiplin", description: "Rian menjadi teladan bagi teman-temannya melalui kedisiplinan dan tanggung jawab yang tinggi, membuktikan bahwa karakter kuat adalah prestasi.", image: "https://avatar.iran.liara.run/public/boy?username=Rian" },
+                { name: "Sari", class: "Kelas 4A", achievement: "Juara 2 Menggambar", description: "Imajinasi Sari tertuang dalam goresan warna yang memukau, membawanya meraih Juara 2 dalam Lomba Menggambar tingkat provinsi.", image: "https://avatar.iran.liara.run/public/girl?username=Sari" }
+            ];
+            
+            const parentInfoData = [
+                { title: 'Pertemuan Wali Murid', content: 'Sabtu, 25 Juli 2025, pukul 09:00 WIB di Aula Sekolah. Mohon kehadirannya.', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>', color: 'bg-yellow-50' },
+                { title: 'Jadwal UTS', content: 'Dilaksanakan pada 1 - 5 Agustus 2025. Jadwal detail akan dibagikan segera.', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd" /></svg>', color: 'bg-blue-50' },
+                { title: 'Libur Sekolah', content: 'Sekolah akan libur pada tanggal 17 Agustus 2025 untuk memperingati Hari Kemerdekaan.', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>', color: 'bg-pink-50' },
+                { title: 'Lomba Antar Kelas', content: 'Lomba kebersihan dan mading antar kelas akan diadakan pada 10 Agustus 2025. Ayo dukung kelas kita!', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 16a2 2 0 110-4 2 2 0 010 4z" /></svg>', color: 'bg-green-50' }
+            ];
+
+            const scheduleData = {
+                "4A": {
+                    'Senin': ['Upacara', 'Tematik', 'Matematika'],
+                    'Selasa': ['Penjaskes', 'Tematik', 'B. Inggris'],
+                    'Rabu': ['Tematik', 'Matematika', 'Agama'],
+                    'Kamis': ['Tematik', 'B. Daerah', 'IPS'],
+                    'Jumat': ['Pramuka', 'Seni Budaya', 'Tematik'],
+                    'Sabtu': ['Literasi', 'Ekstrakurikuler']
+                },
+                "4B": {
+                    'Senin': ['Upacara', 'B. Indonesia', 'IPA'],
+                    'Selasa': ['Matematika', 'PKN', 'Penjaskes'],
+                    'Rabu': ['B. Inggris', 'IPS', 'B. Indonesia'],
+                    'Kamis': ['Agama', 'Seni Budaya', 'Matematika'],
+                    'Jumat': ['Pramuka', 'IPA', 'B. Daerah'],
+                    'Sabtu': ['Literasi', 'Ekstrakurikuler']
+                },
+                "4C": {
+                    'Senin': ['Upacara', 'Matematika', 'IPS'],
+                    'Selasa': ['Tematik', 'Penjaskes', 'B. Daerah'],
+                    'Rabu': ['IPA', 'B. Indonesia', 'Tematik'],
+                    'Kamis': ['Seni Budaya', 'Agama', 'B. Inggris'],
+                    'Jumat': ['Pramuka', 'PKN', 'Matematika'],
+                    'Sabtu': ['Literasi', 'Ekstrakurikuler']
+                },
+                "4D": {
+                    'Senin': ['Upacara', 'IPA', 'Tematik'],
+                    'Selasa': ['B. Inggris', 'Matematika', 'Penjaskes'],
+                    'Rabu': ['IPS', 'B. Daerah', 'Agama'],
+                    'Kamis': ['Tematik', 'B. Indonesia', 'PKN'],
+                    'Jumat': ['Pramuka', 'Seni Budaya', 'Tematik'],
+                    'Sabtu': ['Literasi', 'Ekstrakurikuler']
+                }
+            };
+            
+            const galleryData = [
+                { title: "Pramuka", imageSrc: "https://placehold.co/400x300/A7D2CB/3A6B35?text=Pramuka", description: "Kegiatan Pramuka mingguan melatih kemandirian, kerja sama tim, dan cinta alam. Siswa belajar tali-temali dan sandi morse dengan gembira." },
+                { title: "Lomba 17an", imageSrc: "https://placehold.co/400x300/F2D2BD/3A6B35?text=Lomba+17an", description: "Siswa-siswi kelas 4 berpartisipasi dengan semangat dalam berbagai lomba untuk memeriahkan Hari Kemerdekaan Indonesia." },
+                { title: "Karya Wisata", imageSrc: "https://placehold.co/400x300/E9E5D3/3A6B35?text=Karya+Wisata", description: "Mengunjungi museum dan tempat bersejarah untuk belajar langsung dari sumbernya. Pengalaman belajar yang tak terlupakan!" },
+                { title: "Kelas Seni", imageSrc: "https://placehold.co/400x300/caa670/3A6B35?text=Kelas+Seni", description: "Mengasah kreativitas melalui kegiatan melukis dan membuat kerajinan tangan. Setiap karya adalah ekspresi unik dari imajinasi siswa." },
+                { title: "Olah Raga", imageSrc: "https://placehold.co/400x300/408966/FFFFFF?text=Olah+Raga", description: "Menjaga kebugaran dan sportivitas melalui pelajaran olahraga. Senang bergerak, tubuh pun menjadi sehat." },
+                { title: "Upacara Bendera", imageSrc: "https://placehold.co/400x300/3A6B35/FFFFFF?text=Upacara", description: "Setiap hari Senin, kami melaksanakan upacara bendera dengan khidmat untuk menumbuhkan rasa cinta tanah air." },
+                { title: "Pentas Seni", imageSrc: "https://placehold.co/400x300/F9A8D4/3A6B35?text=Pentas+Seni", description: "Siswa menampilkan bakat mereka dalam menari, menyanyi, dan drama di acara pentas seni tahunan sekolah." },
+                { title: "Belajar Kelompok", imageSrc: "https://placehold.co/400x300/A5B4FC/3A6B35?text=Belajar+Kelompok", description: "Diskusi dan kerja kelompok membantu siswa untuk memecahkan masalah bersama dan belajar dari satu sama lain." }
+            ];
+
+            // --- ELEMEN DOM ---
+            const sliderContainer = document.getElementById('slider-container');
+            const prevButton = document.getElementById('prev-slide');
+            const nextButton = document.getElementById('next-slide');
+            const nameEl = document.getElementById('student-name');
+            const classEl = document.getElementById('student-class');
+            const achievementEl = document.getElementById('student-achievement');
+            const descriptionEl = document.getElementById('student-description');
+            const descriptionContentEl = document.getElementById('description-content');
+            const galleryContainer = document.getElementById('gallery-container');
+
+            // --- STATE SLIDER ---
+            let cards = [];
+            let activeCardIndex = -1;
+            let isTransitioning = false;
+            let scrollTimeout;
+
+            // --- FUNGSI INISIALISASI ---
+            function initialize() {
+                setupSlider();
+                setupScheduleSwitcher();
+                initializeInfoModal();
+                setupGallery();
+                let initTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(initTimeout);
+                    initTimeout = setTimeout(setupSlider, 100);
+                });
+            }
+            
+            // --- INISIALISASI SLIDER ---
+            function setupSlider() {
+                if (!sliderContainer) return;
+                sliderContainer.innerHTML = '';
+                const allData = [...studentData, ...studentData, ...studentData];
+                allData.forEach((student, index) => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = "student-card flex-shrink-0 w-1/2 sm:w-1/3 cursor-pointer";
+                    cardDiv.dataset.originalIndex = index % studentData.length;
+                    cardDiv.innerHTML = `
+                        <div class="aspect-[3/4] w-full bg-gray-300 rounded-xl overflow-hidden shadow-lg border-4 border-white/50">
+                            <img src="${student.image}" alt="Foto ${student.name}" class="w-full h-full object-cover">
+                        </div>`;
+                    sliderContainer.appendChild(cardDiv);
+                });
+                cards = Array.from(sliderContainer.children);
+                setInitialPosition();
+                addCardEventListeners();
+            }
+
+            function setInitialPosition() {
+                if(cards.length === 0) return;
+                const cardWidth = cards[0].offsetWidth;
+                const gap = parseInt(window.getComputedStyle(sliderContainer).gap) || 16;
+                const initialScroll = (cardWidth + gap) * studentData.length;
+                sliderContainer.style.scrollBehavior = 'auto';
+                sliderContainer.scrollLeft = initialScroll;
+                sliderContainer.style.scrollBehavior = 'smooth';
+                updateCardStyles();
+            }
+
+            function updateCardStyles() {
+                if (!sliderContainer) return;
+                const sliderCenter = sliderContainer.scrollLeft + sliderContainer.offsetWidth / 2;
+                let newActiveCardIndex = -1;
+                let minDistance = Infinity;
+                cards.forEach((card, index) => {
+                    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                    const distance = Math.abs(sliderCenter - cardCenter);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        newActiveCardIndex = index;
+                    }
+                    const maxDistance = sliderContainer.offsetWidth / 2;
+                    const scale = Math.max(0.85, 1 - (distance / maxDistance) * 0.2);
+                    const opacity = Math.max(0.6, 1 - (distance / maxDistance) * 0.5);
+                    card.style.transform = `scale(${scale})`;
+                    card.style.opacity = `${opacity}`;
+                });
+                if (newActiveCardIndex !== activeCardIndex) {
+                    activeCardIndex = newActiveCardIndex;
+                    if (cards[activeCardIndex]) {
+                        const originalIndex = parseInt(cards[activeCardIndex].dataset.originalIndex);
+                        updateDescription(studentData[originalIndex]);
+                    }
+                }
+            }
+
+            function updateDescription(student) {
+                if (!student) return;
+                descriptionContentEl.classList.remove('desc-enter');
+                void descriptionContentEl.offsetWidth;
+                nameEl.textContent = student.name;
+                classEl.textContent = student.class;
+                achievementEl.textContent = student.achievement;
+                descriptionEl.textContent = student.description;
+                descriptionContentEl.classList.add('desc-enter');
+            }
+
+            function handleInfiniteScroll() {
+                if(cards.length === 0) return;
+                const cardWidth = cards[0].offsetWidth;
+                const gap = parseInt(window.getComputedStyle(sliderContainer).gap) || 16;
+                const totalCardWidth = cardWidth + gap;
+                const numOriginal = studentData.length;
+                if (sliderContainer.scrollLeft < totalCardWidth * (numOriginal * 0.5)) {
+                    sliderContainer.style.scrollBehavior = 'auto';
+                    sliderContainer.scrollLeft += numOriginal * totalCardWidth;
+                    sliderContainer.style.scrollBehavior = 'smooth';
+                }
+                if (sliderContainer.scrollLeft > totalCardWidth * (numOriginal * 2.5 - 1)) {
+                    sliderContainer.style.scrollBehavior = 'auto';
+                    sliderContainer.scrollLeft -= numOriginal * totalCardWidth;
+                    sliderContainer.style.scrollBehavior = 'smooth';
+                }
+            }
+
+            function changeSlide(direction) {
+                if (isTransitioning || cards.length === 0) return;
+                isTransitioning = true;
+                const cardWidth = cards[0].offsetWidth;
+                const gap = parseInt(window.getComputedStyle(sliderContainer).gap) || 16;
+                sliderContainer.scrollBy({ left: direction * (cardWidth + gap), behavior: 'smooth' });
+                setTimeout(() => isTransitioning = false, 500);
+            }
+            
+            function addCardEventListeners() {
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    });
+                });
+            }
+            
+            if (sliderContainer) {
+                sliderContainer.addEventListener('scroll', () => {
+                    updateCardStyles();
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(handleInfiniteScroll, 250);
+                });
+            }
+            if(nextButton) nextButton.addEventListener('click', () => changeSlide(1));
+            if(prevButton) prevButton.addEventListener('click', () => changeSlide(-1));
+
+            // --- INISIALISASI JADWAL PELAJARAN ---
+            function setupScheduleSwitcher() {
+                const scheduleContainer = document.getElementById('schedule-container');
+                const buttonsContainer = document.getElementById('schedule-buttons');
+
+                function renderSchedule(className) {
+                    const data = scheduleData[className];
+                    if (!data) {
+                        scheduleContainer.innerHTML = '<p>Jadwal tidak ditemukan.</p>';
+                        return;
+                    }
+                    
+                    const scheduleGrid = Object.keys(data).map(day => {
+                        const subjectsList = data[day].map(subject => `<li class="text-sm">${subject}</li>`).join('');
+                        return `
+                            <div class="bg-white/10 p-3 rounded-lg schedule-card-enter">
+                                <h4 class="font-bold border-b border-white/20 pb-1 mb-2">${day}</h4>
+                                <ul class="space-y-1">${subjectsList}</ul>
+                            </div>
+                        `;
+                    }).join('');
+
+                    scheduleContainer.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">${scheduleGrid}</div>`;
+                }
+
+                if (buttonsContainer) {
+                    buttonsContainer.addEventListener('click', (e) => {
+                        if (e.target.tagName === 'BUTTON') {
+                            const className = e.target.dataset.class;
+                            buttonsContainer.querySelectorAll('button').forEach(btn => {
+                                btn.classList.remove('schedule-btn-active');
+                                btn.classList.add('text-gray-300', 'hover:bg-white/20');
+                            });
+                            e.target.classList.add('schedule-btn-active');
+                            e.target.classList.remove('text-gray-300', 'hover:bg-white/20');
+                            renderSchedule(className);
+                        }
+                    });
+                }
+
+                renderSchedule('4A');
+            }
+
+            function initializeInfoModal() {
+                const infoModalBody = document.getElementById('info-modal-body');
+                if (!infoModalBody) return;
+                infoModalBody.innerHTML = parentInfoData.map(info => `
+                    <div class="${info.color} p-4 rounded-lg shadow-md flex items-start gap-4">
+                        ${info.icon}
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800">${info.title}</h4>
+                            <p class="text-sm text-gray-600 mt-1">${info.content}</p>
+                        </div>
+                    </div>`).join('');
+            }
+            
+            function setupGallery() {
+                if (!galleryContainer) return;
+                galleryContainer.innerHTML = '';
+                galleryData.forEach(item => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'group relative cursor-pointer overflow-hidden rounded-lg shadow-lg';
+                    galleryItem.onclick = () => openGalleryModal(item.imageSrc, item.title, item.description);
+                    
+                    galleryItem.innerHTML = `
+                        <img src="${item.imageSrc}" alt="${item.title}" class="w-full h-full object-cover aspect-video transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center p-2">
+                            <p class="text-white font-bold text-center text-sm sm:text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">${item.title}</p>
+                        </div>
+                    `;
+                    galleryContainer.appendChild(galleryItem);
+                });
+            }
+
+            initialize();
+        });
+
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseButton = document.getElementById('modal-close-button');
+        const infoModal = document.getElementById('info-modal');
+        const infoModalContent = infoModal.querySelector('.info-modal-content');
+
+        function showModal(title, body, showCloseButton = true) {
+            if (modal && modalContent) {
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-body').innerHTML = body;
+                modalCloseButton.style.display = showCloseButton ? 'block' : 'none';
+                modal.classList.remove('hidden');
+                modalContent.classList.remove('modal-leave');
+                modalContent.classList.add('modal-enter');
+            }
+        }
+
+        function hideModal() {
+            if (modal && modalContent) {
+                modalContent.classList.add('modal-leave');
+                modalContent.classList.remove('modal-enter');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function showInfoModal() {
+            if (infoModal && infoModalContent) {
+                infoModal.classList.remove('hidden');
+                infoModalContent.classList.remove('modal-leave');
+                infoModalContent.classList.add('modal-enter');
+            }
+        }
+
+        function hideInfoModal() {
+            if (infoModal && infoModalContent) {
+                infoModalContent.classList.remove('modal-enter');
+                infoModalContent.classList.add('modal-leave');
+                setTimeout(() => infoModal.classList.add('hidden'), 300);
+            }
+        }
+        
+        function showPasswordModal(className) {
+            const passwordModalHTML = `
+                <p class="text-center text-gray-600 mb-4">Silakan masukkan kata sandi untuk mengakses portal kelas.</p>
+                <input type="password" id="password-input" class="w-full p-2 border border-gray-300 rounded-lg mb-4" placeholder="Kata Sandi">
+                <div id="password-error" class="text-red-500 text-sm mb-4 hidden">Kata sandi salah. Silakan coba lagi.</div>
+                <button onclick="checkPassword('${className}')" class="w-full bg-[#408966] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#3A6B35] transition-colors">
+                    Masuk
+                </button>
+            `;
+            showModal(`Portal Kelas ${className}`, passwordModalHTML, false);
+            const passwordInput = document.getElementById('password-input');
+            if (passwordInput) {
+                passwordInput.addEventListener('keyup', function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        checkPassword(className);
+                    }
+                });
+                passwordInput.focus();
+            }
+        }
+
+        function checkPassword(className) {
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            const correctPassword = 'kelasku' + className;
+
+            if (passwordInput.value === correctPassword) {
+                hideModal();
+                setTimeout(() => {
+                     showModal('Berhasil Masuk!', `<p>Selamat datang di Portal Kelas ${className}. Fitur lengkap akan segera hadir!</p>`);
+                }, 350);
+            } else {
+                if (passwordError) passwordError.classList.remove('hidden');
+                if (passwordInput) {
+                    passwordInput.focus();
+                    passwordInput.select();
+                }
+            }
+        }
+        
+        function openGalleryModal(imageSrc, title, description) {
+            const modalBodyHTML = `
+                <img src="${imageSrc.replace('400x300', '800x600')}" alt="${title}" class="w-full h-auto rounded-lg mb-4 shadow-lg">
+                <p class="text-gray-700 text-center">${description}</p>
+            `;
+            showModal(title, modalBodyHTML);
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) hideModal();
+            if (e.target === infoModal) hideInfoModal();
+        });
+    </script>
+</body>
+</html>
